@@ -21,6 +21,7 @@ parser.add_argument('path', type=str, default=False, required=False)
 
 
 def _client(service, region_name='eu-west-1'):
+    logger.info(f'call _client(service={service}, region_name={region_name})')
     return boto3.client(service, region_name)
 
 

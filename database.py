@@ -13,20 +13,26 @@ from config import (DevelopmentConfig,
 from filters import datetimeformat, file_type
 from models import db
 from resources import _read_parameters_store
+from cloud_watch.logs.log_events import Logger
 
 if os.path.exists("app_logs"):
     os.remove("app_logs")
 
 logger.basicConfig(filename='app_logs',
                             filemode='a',
-                            format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                            format=f'%(levelname)s:%(message)s',
                             datefmt='%H:%M:%S',
-                            level=logger.DEBUG)
+                            level=logger.INFO)
 
 
 def create_app():
     cur_env = str(os.environ['FLASK_ENV'])
-    logger.debug(f'FLASK_ENV: {os.environ["FLASK_ENV"]}.')
+
+    log = Logger()
+
+    if not log.describe_log_groups()['logGroups']:
+        log.create_log_group()
+        log.create_log_stream(log_stream_name='app-test-logs')
 
     if os.environ['FLASK_ENV'] == 'prod':
         param_store = _read_parameters_store('sfigiel-prod-db-cred', True)
@@ -43,14 +49,14 @@ def create_app():
     flask_app = Flask(__name__)
     flask_app.config['SECRET_KEY'] = 'the random string'
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_CONNECTION_URI
-    logger.debug(f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
+    logger.info(f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 
-    logger.debug(f'CREATING DB ENGINE ...')
+    logger.info(f'CREATING DB ENGINE ...')
     engine = create_engine(flask_app.config['SQLALCHEMY_DATABASE_URI'])
     if not database_exists(engine.url):
         create_database(engine.url)
-    logger.debug(f'DATABASE_ENGINE: {database_exists(engine.url)}')
+    logger.info(f'DATABASE_ENGINE: {database_exists(engine.url)}')
 
     with flask_app.app_context():
         db.init_app(flask_app)

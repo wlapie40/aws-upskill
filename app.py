@@ -34,8 +34,6 @@ from resources import (get_bucket,
                        cloudwatch_metrics,
                        )
 
-logger.basicConfig(level="DEBUG")
-
 app, api, login_manager, cur_env = create_app()
 
 
@@ -152,6 +150,7 @@ def create_bucket():
         return render_template('create_bucket.html', form=form, name=current_user.username, cur_env=cur_env)
     return render_template('create_bucket.html', form=form, name=current_user.username, cur_env=cur_env)
 
+
 @app.route('/instance/monitoring', methods=['GET', 'POST'])
 @login_required
 def cloud_watch():
@@ -179,4 +178,3 @@ api.add_resource(DownloadS3BucketFile,
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=80)
-
