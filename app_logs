@@ -1,7 +1,0 @@
-INFO:call _client(service=logs, region_name=eu-west-1)
-INFO:Found credentials in shared credentials file: ~/.aws/credentials
-INFO:call describe_log_groups() => {'logGroups': [{'logGroupName': '/aws/sfigiel/dev/flask', 'creationTime': 1568117489552, 'metricFilterCount': 0, 'arn': 'arn:aws:logs:eu-west-1:890769921003:log-group:/aws/sfigiel/dev/flask:*', 'storedBytes': 0}], 'ResponseMetadata': {'RequestId': 'a88a4f6f-d9fc-450c-bb7b-50a3ffff7bda', 'HTTPStatusCode': 200, 'HTTPHeaders': {'x-amzn-requestid': 'a88a4f6f-d9fc-450c-bb7b-50a3ffff7bda', 'content-type': 'application/x-amz-json-1.1', 'content-length': '203', 'date': 'Tue, 10 Sep 2019 12:23:06 GMT'}, 'RetryAttempts': 0}}
-INFO:DATABASE_CONNECTION_URI: postgresql+psycopg2://dev_user:dev1234@localhost:5432/dev_db
-INFO:CREATING DB ENGINE ...
-INFO:DATABASE_ENGINE: True
-INFO: * Running on http://0.0.0.0:80/ (Press CTRL+C to quit)

@@ -1,5 +1,3 @@
-import logging as logger
-
 from flask import (
     render_template,
     request,
@@ -31,10 +29,12 @@ from resources import (get_bucket,
                        get_buckets_list,
                        get_region_name,
                        _get_s3_resource,
-                       cloudwatch_metrics,
+                       _get_cloud_watch_logs,
                        )
 
-app, api, login_manager, cur_env = create_app()
+app, api, login_manager, cur_env, cw_log = create_app()
+
+#  todo create a separate class to keep details about logged user
 
 
 @login_manager.user_loader
@@ -51,6 +51,7 @@ def index():
         return redirect(url_for('files'))
     else:
         buckets = get_buckets_list()
+        cw_log.put_log_events(message=f'ROUTE--> index TOP 10 {buckets[:10]}')
         return render_template("index.html", buckets=buckets, name=current_user.username, cur_env=cur_env)
 
 
@@ -60,7 +61,9 @@ def files():
     buckets = get_bucket()
     summaries = buckets.objects.all()
     try:
-        return render_template('files.html', my_bucket=buckets, files=summaries, name=current_user.username, cur_env=cur_env)
+        cw_log.put_log_events(message=f'ROUTE--> FILES msg: buckets:{buckets} summaries:{summaries}')
+        return render_template('files.html', my_bucket=buckets,
+                               files=summaries, name=current_user.username, cur_env=cur_env)
     except:
         return render_template("index.html", buckets=buckets, name=current_user.username, cur_env=cur_env)
 
@@ -71,6 +74,7 @@ def upload():
     my_bucket = get_bucket()
     my_bucket.Object(file.filename).put(Body=file)
 
+    cw_log.put_log_events(message=f'ROUTE--> UPLOAD msg: "{file.filename}" uploaded successfully')
     flash('File uploaded successfully')
     return redirect(url_for('files'))
 
@@ -82,6 +86,7 @@ def delete():
     my_bucket = get_bucket()
     my_bucket.Object(key).delete()
 
+    cw_log.put_log_events(message=f'ROUTE--> delete msg:File: {key} deleted')
     flash('File deleted successfully')
     return redirect(url_for('files'))
 
@@ -92,6 +97,7 @@ def download():
     my_bucket = get_bucket()
     file_obj = my_bucket.Object(key).get()
 
+    cw_log.put_log_events(message=f'ROUTE--> download msg:File: {key} downloaded')
     return Response(
         file_obj['Body'].read(),
         mimetype='text/plain',
@@ -148,20 +154,24 @@ def create_bucket():
 
     else:
         return render_template('create_bucket.html', form=form, name=current_user.username, cur_env=cur_env)
+    cw_log.put_log_events(message=f'ROUTE--> create_bucket msg: bucket {bucket_name}{current_region} has been created')
     return render_template('create_bucket.html', form=form, name=current_user.username, cur_env=cur_env)
 
 
 @app.route('/instance/monitoring', methods=['GET', 'POST'])
 @login_required
 def cloud_watch():
-    metrics = cloudwatch_metrics('i-0913babd963f283be')
-    return render_template('instance_monitoring.html', metrics=metrics, name=current_user.username, cur_env=cur_env)
+    response = _get_cloud_watch_logs(cw_log.log_group_name)
+    cw_log.put_log_events(message=f'ROUTE--> cloud_watch')
+    return render_template('instance_monitoring.html', logs=response['events'],
+                           name=current_user.username, cur_env=cur_env)
 
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
+    cw_log.put_log_events(message=f'ROUTE--> logout LOG OUT')
     return redirect(url_for('index'))
 
 

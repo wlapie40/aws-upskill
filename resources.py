@@ -1,5 +1,4 @@
 import logging as logger
-from datetime import datetime, timedelta
 
 import boto3
 from flask import session
@@ -13,57 +12,44 @@ parser.add_argument('bucket_name', type=str, default=False, required=True)
 parser.add_argument('file_name', type=str, default=False, required=False)
 parser.add_argument('path', type=str, default=False, required=False)
 
-# #get all instances
-# instanceIDs=[]
-# ec2 = boto3.resource('ec2')
-# instances = ec2.instances.filter(
-#     Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
 
-
-def _client(service, region_name='eu-west-1'):
+def _client(service: str, region_name: str = 'eu-west-1'):
     logger.info(f'call _client(service={service}, region_name={region_name})')
     return boto3.client(service, region_name)
 
 
-def _read_parameters_store(param_name, with_decryption=False): ## todo
-    client = boto3.client('ssm', region_name='eu-west-1')
-    return tuple(client.get_parameter(Name=param_name, WithDecryption=with_decryption)['Parameter']['Value'].split(','))
+def _read_parameters_store(param_store_name: str, with_decryption: bool = False):
+    logger.info(f'call _read_parameters_store(param_name={param_store_name})')
+    client = _client('ssm')
+    try:
+        return tuple(client.get_parameter(Name=param_store_name,
+                                          WithDecryption=with_decryption)['Parameter']['Value'].split(','))
+    except:
+        return None
 
 
-#Get weekly CPU usage function
-def cloudwatch_metrics(InstanceId):
-    client = boto3.client('cloudwatch')
-    response = client.get_metric_statistics(
-        Namespace='AWS/EC2', #check the AWS docs on the namespaces.
-        MetricName='CPUUtilization',
-        Dimensions=[
-            {
-                'Name': 'InstanceId',
-                'Value': InstanceId
-            },
-        ],
-
-        StartTime=datetime.now() - timedelta(days=7),
-        EndTime=datetime.now(),
-        Period=86400,
-        Statistics=[
-            'Average',
-        ],
-        Unit='Percent'
+def _put_parameter_to_store(value: str,
+                            name: str = 'sfigiel-sequenceToken',
+                            description: str = "the very next 'sequenceToken' for CloudWatch (logs)",
+                            value_type: str = 'String',
+                            ):
+    client = _client('ssm')
+    response = client.put_parameter(
+        Name=name,
+        Description=description,
+        Value=value,
+        Type=value_type,
+        # KeyId='string', # is required for SecureString type parameter only.
+        Overwrite=True,
+        Tier='Standard',
     )
-
-    # for k, v in response.items():
-    #     if k == 'Datapoints':
-    #         for y in v:
-    #             return "{0:.2f}".format(y['Average'])
+    logger.info(f'call _put_parameter_to_store() {response}')
 
 
-    for k, v in response.items():
-        if k == 'Datapoints':
-            for y in v:
-                print("{0:.2f}".format(y['Average']))
-
-    return response.items()
+def _get_cloud_watch_logs(log_group: str):
+    client = _client('logs')
+    response = client.filter_log_events(logGroupName=log_group, limit=10000)
+    return response
 
 
 def _get_s3_resource():

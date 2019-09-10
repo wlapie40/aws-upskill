@@ -29,3 +29,5 @@ htmlcov/
 .coverage
 .coverage.*
 *,cover
+database.conf
+app_logs

@@ -1,8 +1,9 @@
 ##todo deploy.sh
+python3 -m venv env
 
 1. export FLASK_ENV=dev
-2. pipenv shell
+2. *pipenv shell
 3. python database_conf_gen.py
 5. docker-compose down
 6. docker-compose up -d / docker-compose up --build
-7. pipenv run python app.py
+7. *pipenv run python app.py / python app.py (virtualenv)
