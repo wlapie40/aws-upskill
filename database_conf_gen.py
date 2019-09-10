@@ -6,7 +6,7 @@ from resources import _read_parameters_store
 
 param_names = ['POSTGRES_USER', 'POSTGRES_PASSWORD', 'POSTGRES_HOST', 'POSTGRES_PORT', 'POSTGRES_DB']
 with open("database.conf", "w+") as file:
-    print(f'current FLASK_ENV value : {os.environ["FLASK_ENV"]} !!!')
+    print(f'FLASK_ENV value: {os.environ["FLASK_ENV"]}')
     if os.environ['FLASK_ENV'] == 'prod':
         param_store = _read_parameters_store('sfigiel-prod-db-cred', True)
     elif os.environ['FLASK_ENV'] == 'dev':
@@ -16,7 +16,7 @@ with open("database.conf", "w+") as file:
 
     for name, value in zip(param_names, param_store):
         file.write(f'{name}={value}\n')
-
+    print(f'database.conf file created')
 
 # class ProgressPercentage(object):
 #

@@ -9,16 +9,25 @@ from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
 from config import (DevelopmentConfig,
-                    ProductionConfig,
-                    DockerConfig,
                     )
 from filters import datetimeformat, file_type
 from models import db
 from resources import _read_parameters_store
-logger.basicConfig(level="DEBUG")
+
+if os.path.exists("app_logs"):
+    os.remove("app_logs")
+
+logger.basicConfig(filename='app_logs',
+                            filemode='a',
+                            format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                            datefmt='%H:%M:%S',
+                            level=logger.DEBUG)
 
 
 def create_app():
+    cur_env = str(os.environ['FLASK_ENV'])
+    logger.debug(f'FLASK_ENV: {os.environ["FLASK_ENV"]}.')
+
     if os.environ['FLASK_ENV'] == 'prod':
         param_store = _read_parameters_store('sfigiel-prod-db-cred', True)
         config = DevelopmentConfig(*param_store)
@@ -35,7 +44,7 @@ def create_app():
     flask_app.config['SECRET_KEY'] = 'the random string'
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_CONNECTION_URI
     logger.debug(f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
-    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 
     logger.debug(f'CREATING DB ENGINE ...')
     engine = create_engine(flask_app.config['SQLALCHEMY_DATABASE_URI'])
@@ -56,9 +65,7 @@ def create_app():
         flask_app.jinja_env.filters['datetimeformat'] = datetimeformat
         flask_app.jinja_env.filters['file_type'] = file_type
 
-    try:
+    if os.path.exists("database.conf"):
         os.remove("database.conf")
-    except Exception as e:
-        logger.error(f'{e}')
-    cur_env = str(os.environ['FLASK_ENV'])
+
     return flask_app, api, login_manager, cur_env

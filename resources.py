@@ -28,6 +28,7 @@ def _read_parameters_store(param_name, with_decryption=False): ## todo
     client = boto3.client('ssm', region_name='eu-west-1')
     return tuple(client.get_parameter(Name=param_name, WithDecryption=with_decryption)['Parameter']['Value'].split(','))
 
+
 #Get weekly CPU usage function
 def cloudwatch_metrics(InstanceId):
     client = boto3.client('cloudwatch')

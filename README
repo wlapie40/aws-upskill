@@ -1,13 +1,8 @@
 ##todo deploy.sh
 
-install python3-dev (Ubuntu)
-install docker-compose
-
-1. flask-s3-win/
-2. export FLASK_ENV=dev
-3. pipenv shell
-4. python utils.py
-
+1. export FLASK_ENV=dev
+2. pipenv shell
+3. python database_conf_gen.py
 5. docker-compose down
-6. docker-compose up -d
+6. docker-compose up -d / docker-compose up --build
 7. pipenv run python app.py

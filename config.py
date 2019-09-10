@@ -16,13 +16,15 @@ class DevelopmentConfig(BaseConfig):
     host = 'localhost' # in case of using docker
     FLASK_DEBUG = 1
     DEBUG = True
-    # SQLALCHEMY_ECHO = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_ECHO = True
 
 
 class ProductionConfig(BaseConfig):
     """
     Production configurations
     """
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     FLASK_DEBUG = 0
 
 

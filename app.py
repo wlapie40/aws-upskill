@@ -31,12 +31,13 @@ from resources import (get_bucket,
                        get_buckets_list,
                        get_region_name,
                        _get_s3_resource,
-                        cloudwatch_metrics,
+                       cloudwatch_metrics,
                        )
 
 logger.basicConfig(level="DEBUG")
 
 app, api, login_manager, cur_env = create_app()
+
 
 @login_manager.user_loader
 def load_user(user_id):
