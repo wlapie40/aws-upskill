@@ -15,7 +15,8 @@ class CloudWatchLogger:
         self.client = _client('logs')
         self.user = 'sfigiel'  #  todo os.environ['USERNAME']
         self.env = os.environ["FLASK_ENV"]
-        self.log_group_name = f'/aws/{self.user}/{self.env}/flask'
+        # self.log_group_name = f'/aws/{self.user}/{self.env}/flask'
+        self.log_group_name = f'/aws/sfigiel/dev/flask'
         self.log_stream_name = 'app-logs'
         self.sequence_token = _read_parameters_store(param_store_name='sfigiel-sequenceToken')
 

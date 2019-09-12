@@ -7,3 +7,5 @@ python3 -m venv env
 5. docker-compose down
 6. docker-compose up -d / docker-compose up --build
 7. *pipenv run python app.py / python app.py (virtualenv)
+
+access to S3, Parameter Store, CloudWatch
