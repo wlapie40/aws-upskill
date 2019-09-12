@@ -1,7 +1,7 @@
 import os
 import time
 
-from database import logger
+from run import logger
 from resources import _client, _read_parameters_store, _put_parameter_to_store
 
 
@@ -15,7 +15,8 @@ class CloudWatchLogger:
         self.client = _client('logs')
         self.user = 'sfigiel'  #  todo os.environ['USERNAME']
         self.env = os.environ["FLASK_ENV"]
-        self.log_group_name = f'/aws/{self.user}/{self.env}/flask'
+        # self.log_group_name = f'/aws/{self.user}/{self.env}/flask'
+        self.log_group_name = f'/aws/sfigiel/dev/flask'
         self.log_stream_name = 'app-logs'
         self.sequence_token = _read_parameters_store(param_store_name='sfigiel-sequenceToken')
 

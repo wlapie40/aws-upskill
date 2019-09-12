@@ -19,7 +19,9 @@ from api.api import (ListS3Buckets,
                      UploadS3BucketFile,
                      DownloadS3BucketFile,
                      )
-from run import create_app
+
+
+from database import create_app
 from forms import (LoginForm,
                    RegisterForm,
                    NewBucketForm,
@@ -143,7 +145,6 @@ def signup():
 @login_required
 def create_bucket():
     form = NewBucketForm()
-    print(get_region_name())
     if form.validate_on_submit():
         current_region = get_region_name()
         bucket_name = str(form.bucket_name.data)
@@ -151,7 +152,7 @@ def create_bucket():
 
         s3_resource.create_bucket(
             Bucket=bucket_name,
-            CreateBucketConfiguration={'LocationConstraint': 'eu-west-1'})
+            CreateBucketConfiguration={'LocationConstraint': current_region})
 
     else:
         return render_template('create_bucket.html', form=form, name=current_user.username, cur_env=cur_env)
@@ -188,4 +189,4 @@ api.add_resource(DownloadS3BucketFile,
                  '/download/api/v1.0/file')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(host="0.0.0.0", port=80)

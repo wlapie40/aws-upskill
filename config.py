@@ -33,5 +33,7 @@ class DockerConfig(BaseConfig):
     Production configurations
     """
     host = 'database'
+    FLASK_DEBUG = True
+    DEBUG = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_ECHO = True
-    FLASK_DEBUG = 1
