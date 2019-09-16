@@ -4,9 +4,10 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building make..'
-                sh "echo $(whereis make)"
+                sh 'echo "$PATH"'
+                sh 'export PATH=$PATH:/usr/local/bin/docker-compose'
                 sh 'python --version'
-                //sh 'make build'
+                sh 'make build'
             }
         }
         stage('Test') {
