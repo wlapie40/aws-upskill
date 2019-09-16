@@ -1,11 +1,12 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.6.9-alpine'
-              }
-        }
+    agent any
     stages {
         stage('Build') {
+            agent {
+                docker {
+                    image 'python:3.6.9-alpine'
+                }
+            }
             steps {
                 echo 'Building make2..'
                 sh 'python --version'
@@ -14,7 +15,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo 'Testing2..'
+                echo 'Testing..'
             }
         }
         stage('Deploy') {
