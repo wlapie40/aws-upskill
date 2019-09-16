@@ -3,10 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building make..'
-                sh 'echo "$PATH"'
-                sh 'export PATH=$PATH:/usr/local/bin/docker-compose'
-                sh 'python --version'
+                echo 'Building.. new jenkins'
                 sh 'make build'
             }
         }
