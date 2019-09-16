@@ -8,7 +8,7 @@ pipeline {
                 }
             }
             steps {
-                echo 'Building make2..'
+                echo 'Building make..'
                 sh 'python --version'
                 //sh 'make build'
             }
