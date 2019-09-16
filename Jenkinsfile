@@ -1,40 +1,21 @@
 pipeline {
-    agent { docker { image 'python:3.6.8' } }
-    environment
-        {
-            FLASK_APP             = 'app.py'
-            FLASK_ENV             = 'dev'
-            VIRTUAL_ENV           = "${env.WORKSPACE}/venv"
-            //AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
-            //AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
-        }
+    agent any
     stages {
-        stage('Install_Requirements') {
+        stage('Build') {
             steps {
-                echo 'Creating virtualenv ...'
-                    sh 'printenv'
-                    sh """
-                        echo ${SHELL}
-                        [ -d venv ] && rm -rf venv
-                        #virtualenv --python=python3.6 venv
-                        virtualenv venv
-                        #. venv/bin/activate
-                        export PATH=${VIRTUAL_ENV}/bin:${PATH}
-                        pip install --upgrade pip
-                        pip install -r requirements.txt
-                        make clean
-                    """
-            }
+                echo 'Building.. new'
+                sh 'python3 -m database_conf_gen.py'
+                sh 'make build'
             }
         }
         stage('Test') {
             steps {
-                echo 'Test'
+                echo 'Testing..'
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploy'
+                echo 'Deploying....'
             }
         }
     }
