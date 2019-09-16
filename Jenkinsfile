@@ -5,6 +5,7 @@ pipeline {
             steps {
                 echo 'Building.. new'
                 sh 'python3.7 --version'
+                sh 'python3.7 '
                 sh 'python3.7 -m database_conf_gen.py'
                 sh 'make build'
             }
