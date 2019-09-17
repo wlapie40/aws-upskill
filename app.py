@@ -1,3 +1,4 @@
+from itertools import filterfalse
 from flask import (
     render_template,
     request,
@@ -30,6 +31,7 @@ from resources import (get_bucket,
                        get_region_name,
                        _get_s3_resource,
                        _get_cloud_watch_logs,
+                        _client
                        )
 
 app, api, login_manager, cur_env, cw_log = create_app()
@@ -143,14 +145,26 @@ def signup():
 @login_required
 def create_bucket():
     form = NewBucketForm()
+    client = _client('s3')
+    response = client.list_buckets()
+
+    buckets = (bucket['Name'] for bucket in response['Buckets'])
+
     if form.validate_on_submit():
         current_region = get_region_name()
         bucket_name = str(form.bucket_name.data)
         s3_resource = _get_s3_resource()
 
-        s3_resource.create_bucket(
-            Bucket=bucket_name,
-            CreateBucketConfiguration={'LocationConstraint': 'eu-west-1'})
+        if '_' in bucket_name:
+            flash("""Invalid bucket name""")
+            return render_template('create_bucket.html', form=form, name=current_user.username, cur_env=cur_env)
+        if bucket_name not in buckets:
+            s3_resource.create_bucket(
+                Bucket=bucket_name,
+                CreateBucketConfiguration={'LocationConstraint': 'eu-west-1'})
+        else:
+            flash(f'{bucket_name} already exists :( ')
+            return render_template('create_bucket.html', form=form, name=current_user.username, cur_env=cur_env)
 
     else:
         return render_template('create_bucket.html', form=form, name=current_user.username, cur_env=cur_env)
