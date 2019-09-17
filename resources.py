@@ -24,8 +24,9 @@ def _read_parameters_store(param_store_name: str, with_decryption: bool = False)
     try:
         return tuple(client.get_parameter(Name=param_store_name,
                                           WithDecryption=with_decryption)['Parameter']['Value'].split(','))
-    except:
-        return None
+    except Exception as e:
+        print(f'CHECK AWS CREDENTIALS !\nError msg: {e}')
+        return False
 
 
 def _put_parameter_to_store(value: str,

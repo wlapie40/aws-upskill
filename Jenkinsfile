@@ -4,7 +4,6 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Building..'
-        sh 'python -m database_conf.gen.py'
         sh 'make build'
       }
     }

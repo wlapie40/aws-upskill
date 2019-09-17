@@ -12,6 +12,7 @@ param_store_names = {
 with open("database.conf", "w+") as file:
     param_store_name = param_store_names[os.environ['FLASK_ENV']]
     param_store = _read_parameters_store(param_store_name, True)
-    for name, value in zip(param_names, param_store):
-        file.write(f'{name}={value}\n')
-    print(f'database.conf file created')
+    if param_store:
+        for name, value in zip(param_names, param_store):
+            file.write(f'{name}={value}\n')
+        print(f'database.conf file created')
