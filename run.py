@@ -1,5 +1,6 @@
 import logging as logger
 import os
+import time
 
 from flask import Flask
 from flask_bootstrap import Bootstrap
@@ -44,6 +45,7 @@ def _cloud_watch_monitoring():
 
 
 def create_app():
+    time.sleep(3)
     cur_env = str(os.environ['FLASK_ENV'])
 
     # cw_log = _cloud_watch_monitoring()
@@ -56,7 +58,9 @@ def create_app():
     flask_app.config['SECRET_KEY'] = 'the random string'
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_CONNECTION_URI
     logger.info(f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
+
     # cw_log.put_log_events(message=f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
+
 
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 
@@ -85,5 +89,5 @@ def create_app():
 
     if os.path.exists("database.conf"):
         os.remove("database.conf")
-
-    return flask_app, api, login_manager, cur_env #, cw_log
+    cw_log = ''
+    return flask_app, api, login_manager, cur_env, cw_log

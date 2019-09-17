@@ -1,7 +1,7 @@
 import os
 import time
 
-from database import logger
+from run import logger
 from resources import _client, _read_parameters_store, _put_parameter_to_store
 
 
