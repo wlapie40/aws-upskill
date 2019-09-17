@@ -1,17 +1,11 @@
 pipeline {
   agent any
-    environment {
-                AWS_BIN = '/home/ec2-user/.local/bin/aws'
-                }
   stages {
     stage('Build') {
       steps {
-        echo 'Building... jenkins 1.1'
+        echo 'Building..'
+        sh 'python -m database_conf.gen.py'
         sh 'make build'
-        sh 'AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}'
-        sh 'AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY'
-        sh 'echo AWS_ACCESS_KEY_ID'
-        sh 'echo AWS_SECRET_ACCESS_KEY'
       }
     }
     stage('Test') {
@@ -19,11 +13,11 @@ pipeline {
         echo 'Testing..'
       }
     }
-    stage('Deploy') {
+    stage('Destroy') {
       steps {
-        echo 'Deploying....'
+        echo 'Destroying....'
+        sh 'make down'
       }
     }
   }
 }
-

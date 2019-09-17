@@ -4,13 +4,8 @@ COPY . /app
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt&&mkdir /root/.aws
-
-VOLUME /root/.aws/
-
-ARG FLASK_APP=app.py
+RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
 CMD ["python","app.py"]
-

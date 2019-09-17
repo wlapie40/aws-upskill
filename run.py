@@ -48,7 +48,7 @@ def create_app():
     time.sleep(3)
     cur_env = str(os.environ['FLASK_ENV'])
 
-    # cw_log = _cloud_watch_monitoring()
+    cw_log = _cloud_watch_monitoring()
 
     param_store_name = param_store_names[cur_env]
     param_store = _read_parameters_store(param_store_name, True)
@@ -59,20 +59,19 @@ def create_app():
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_CONNECTION_URI
     logger.info(f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
 
-    # cw_log.put_log_events(message=f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
-
+    cw_log.put_log_events(message=f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
 
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 
     logger.info(f'CREATING DB ENGINE ...')
-    # cw_log.put_log_events(message=f'CREATING DB ENGINE ...')
+    cw_log.put_log_events(message=f'CREATING DB ENGINE ...')
 
     engine = create_engine(flask_app.config['SQLALCHEMY_DATABASE_URI'])
     if not database_exists(engine.url):
         create_database(engine.url)
 
     logger.info(f'DATABASE_ENGINE: {database_exists(engine.url)}')
-    # cw_log.put_log_events(message=f'DATABASE_ENGINE: {database_exists(engine.url)}')
+    cw_log.put_log_events(message=f'DATABASE_ENGINE: {database_exists(engine.url)}')
 
     with flask_app.app_context():
         db.init_app(flask_app)
@@ -89,5 +88,4 @@ def create_app():
 
     if os.path.exists("database.conf"):
         os.remove("database.conf")
-    cw_log = ''
     return flask_app, api, login_manager, cur_env, cw_log
