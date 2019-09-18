@@ -1,6 +1,6 @@
 ##todo deploy.sh
-1. export FLASK_ENV=dev/dev/prod
-2. python database_conf_gen.py
+1. export FLASK_ENV= dev or docker  or prod
+2. python gen_creds_for_db.py
 3. commit changes
 4. push
 

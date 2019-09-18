@@ -1,4 +1,3 @@
-from itertools import filterfalse
 from flask import (
     render_template,
     request,
@@ -14,25 +13,25 @@ from flask_login import (login_user,
                          current_user, )
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from api.api import (ListS3Buckets,
+from Project.api.api import (ListS3Buckets,
                      ListS3BucketFiles,
                      DeleteS3BucketFile,
                      UploadS3BucketFile,
                      DownloadS3BucketFile,
                      )
-from run import create_app
-from forms import (LoginForm,
+from Project.run import create_app
+from Project.user.forms import (LoginForm,
                    RegisterForm,
                    NewBucketForm,
                    )
-from models import db, User
-from resources import (get_bucket,
-                       get_buckets_list,
-                       get_region_name,
-                       _get_s3_resource,
-                       _get_cloud_watch_logs,
-                        _client
-                       )
+from Project.user.models import db, User
+from Project.aws.gateway.resources import (get_bucket,
+                                           get_buckets_list,
+                                           get_region_name,
+                                           _get_s3_resource,
+                                           _get_cloud_watch_logs,
+                                           _client
+                                           )
 
 app, api, login_manager, cur_env, cw_log = create_app()
 

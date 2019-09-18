@@ -9,12 +9,12 @@ from flask_restful import Api
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
-from config import (DevelopmentConfig,
-                    )
-from filters import datetimeformat, file_type
-from models import db
-from resources import _read_parameters_store
-from cloud_watch.logs.log_events import CloudWatchLogger
+from Project.aws.cloud_watch.logs.log_events import CloudWatchLogger
+from Project.aws.filters import datetimeformat, file_type
+from Project.aws.gateway.resources import _read_parameters_store
+from Project.config import (DevelopmentConfig,
+                            )
+from Project.user.models import db
 
 #  todo move to separate class obj
 
