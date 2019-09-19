@@ -4,7 +4,7 @@ import boto3
 from flask import session
 from flask_restful import reqparse
 
-from project.aws.entities.serializers import serializer
+from Project.aws.entities.serializers import serializer
 
 # Define parser and request args
 parser = reqparse.RequestParser()

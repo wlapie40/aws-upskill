@@ -10,12 +10,12 @@ from sqlalchemy import create_engine
 from sqlalchemy_utils import (database_exists,
                               create_database,)
 
-from project.aws.cloud_watch.logs.log_events import CloudWatchLogger
-from project.aws.entities.filters import (datetimeformat,
+from Project.aws.cloud_watch.logs.log_events import CloudWatchLogger
+from Project.aws.entities.filters import (datetimeformat,
                                           file_type,)
-from project.aws.gateways.resources import _read_parameters_store
-from project.config import DevelopmentConfig
-from project.user.models import db
+from Project.aws.gateways.resources import _read_parameters_store
+from Project.config import DevelopmentConfig
+from Project.user.models import db
 
 #  todo move to separate class obj
 
