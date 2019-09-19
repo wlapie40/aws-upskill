@@ -7,8 +7,9 @@ pipeline {
         stage('Gen creds') {
           agent { docker { image 'python:3.6.9' } }
             steps {
+              sh ''
               sh 'python --version'
-              sh 'pip install boto3==1.9.209'
+              sh 'pip install -r requirements.txt'
               sh 'python gen_creds_for_db.py'
             }
         }
