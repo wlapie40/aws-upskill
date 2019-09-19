@@ -5,11 +5,10 @@ pipeline {
     }
     stages {
         stage('Gen creds') {
-          agent { docker { image 'python:3.7.4' args '-u root:root' } }
-            steps {
-              sh 'pip install --user boto3==1.9.209'
-              sh 'python gen_creds_for_db.py'
-            }
+            docker.image("python:3.7").inside("--user root"){
+            sh "pip install boto3==1.9.209"
+            sh "python gen_creds_for_db.py"
+        }
         }
         stage('Building') {
             agent any
