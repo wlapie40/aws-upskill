@@ -1,22 +1,31 @@
 pipeline {
-  agent any
-  stages {
-    stage('Build') {
-      steps {
-        echo 'Building..'
-        sh 'make build'
-      }
+    agent none
+    environment {
+        FLASK_ENV = 'docker'
     }
-    stage('Test') {
-      steps {
-        echo 'Testing..'
-      }
+    stages {
+        stage('Gen creds') {
+          agent { docker { image 'python:3.6.9' } }
+            steps {
+              sh 'python --version'
+              sh 'python gen_creds_for_db.py'
+            }
+        }
+        stage('Building') {
+            agent any
+            steps {
+             dir ('Project/jenkins/') {
+                  sh 'make build'
+                }
+                    }
+        }
+        stage('Destroying') {
+            agent any
+            steps {
+           dir ('Project/jenkins/') {
+                sh 'make down'
+              }
+            }
+        }
     }
-    stage('Destroy') {
-      steps {
-        echo 'Destroying....'
-        sh 'make down'
-      }
-    }
-  }
 }
