@@ -5,15 +5,11 @@ pipeline {
     }
     stages {
         stage('Gen creds') {
-                agent {
-                docker {
-                    image 'python:3-alpine'
-                }
+          agent { docker { image 'python:3.7.4' } }
+            steps {
+              sh 'pip install boto3==1.9.209'
+              sh 'python gen_creds_for_db.py'
             }
-               withEnv(["HOME=${env.WORKSPACE}"]) {
-                  sh "pip install boto3==1.9.209"
-            sh "python gen_creds_for_db.py"
-                }
         }
         stage('Building') {
             agent any
