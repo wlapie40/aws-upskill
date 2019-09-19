@@ -7,28 +7,33 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_restful import Api
 from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
+from sqlalchemy_utils import (database_exists,
+                              create_database,)
 
-from config import (DevelopmentConfig,
-                    )
-from filters import datetimeformat, file_type
-from models import db
-from resources import _read_parameters_store
-from cloud_watch.logs.log_events import CloudWatchLogger
+from project.aws.cloud_watch.logs.log_events import CloudWatchLogger
+from project.aws.entities.filters import (datetimeformat,
+                                          file_type,)
+from project.aws.gateways.resources import _read_parameters_store
+from project.config import DevelopmentConfig
+from project.user.models import db
 
 #  todo move to separate class obj
 
-logger.basicConfig(filename='app_logs',
-                            filemode='a',
-                            format=f'%(levelname)s:%(message)s',
-                            datefmt='%H:%M:%S',
-                            level=logger.INFO)
+# logger.basicConfig(filename='project/logs/app_logs',
+#                             filemode='a',
+#                             format=f'%(levelname)s:%(message)s',
+#                             datefmt='%H:%M:%S',
+#                             level=logger.INFO)
 
-param_store_names = {
-    'prod': 'sfigiel-prod-db-cred',
-    'dev': 'sfigiel-dev-db-cred',
-    'docker': 'sfigiel-docker-db-cred',
-}
+
+class ParameterStore:
+    def __init__(self):
+        self._parameters = {'prod': 'sfigiel-prod-db-cred',
+                            'dev': 'sfigiel-dev-db-cred',
+                            'docker': 'sfigiel-docker-db-cred'}
+
+    def add_param(self, param_name, param_value):
+        self._parameters[param_name] = param_value
 
 
 def _cloud_watch_monitoring():
@@ -45,12 +50,14 @@ def _cloud_watch_monitoring():
 
 
 def create_app():
-    time.sleep(3)
     cur_env = str(os.environ['FLASK_ENV'])
 
-    cw_log = _cloud_watch_monitoring()
+    param = ParameterStore()
+    try:
+        param_store_name = param._parameters[cur_env]
+    except:
+        raise KeyError(f'FLASK_ENV value has not been set up.')
 
-    param_store_name = param_store_names[cur_env]
     param_store = _read_parameters_store(param_store_name, True)
     config = DevelopmentConfig(*param_store)
 
@@ -59,6 +66,7 @@ def create_app():
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_CONNECTION_URI
     logger.info(f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
 
+    cw_log = _cloud_watch_monitoring()
     cw_log.put_log_events(message=f'DATABASE_CONNECTION_URI: {config.DATABASE_CONNECTION_URI}')
 
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
@@ -66,6 +74,7 @@ def create_app():
     logger.info(f'CREATING DB ENGINE ...')
     cw_log.put_log_events(message=f'CREATING DB ENGINE ...')
 
+    time.sleep(3)  # let's give a bit more time our DB to wake up :)
     engine = create_engine(flask_app.config['SQLALCHEMY_DATABASE_URI'])
     if not database_exists(engine.url):
         create_database(engine.url)

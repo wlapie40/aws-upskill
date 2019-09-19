@@ -1,6 +1,6 @@
 from flask_restful import Resource
 
-from resources import (
+from project.aws.gateways.resources import (
     _list_s3_buckets,
     _delete_s3_bucket_files,
     _upload_s3_bucket_file,

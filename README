@@ -1,12 +1,10 @@
 ##todo deploy.sh
-1. export FLASK_ENV=dev/dev/prod
-2. python database_conf_gen.py
-3. commit changes
-4. push
-
-
+1. export FLASK_ENV=/dev/docker/prod
+2. python deploy.py
+or
+1. export FLASK_ENV=/dev/docker/prod
 2. *pipenv shell
 3. python database_conf_gen.py
-5. docker-compose down
-6. docker-compose up -d / docker-compose up --build
-7. *pipenv run python app.py / python app.py (virtualenv)
+4. docker-compose down
+5. docker-compose up -d
+6. *pipenv run python app.py / python app.py (virtualenv)

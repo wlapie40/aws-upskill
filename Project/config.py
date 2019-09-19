@@ -13,7 +13,7 @@ class DevelopmentConfig(BaseConfig):
     """
     Development configurations
     """
-    host = 'localhost' # in case of using docker
+    host = 'localhost'  # in case of using docker
     FLASK_DEBUG = 1
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True

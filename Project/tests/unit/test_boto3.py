@@ -1,8 +1,6 @@
 import boto3
 import os
 from moto import mock_s3
-from resources import (_list_s3_buckets, _upload_s3_bucket_file, _list_s3_bucket_files, _delete_s3_bucket_files)
-
 
 MY_BUCKET = "test-pgs-s3"
 PATH = os.path.abspath(r"tests/file_to_upload/clara_db_pass.txt")
