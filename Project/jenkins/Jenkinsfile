@@ -5,7 +5,7 @@ pipeline {
     }
     stages {
         stage('Gen creds') {
-          agent { docker { image 'python:3.6.9' } }
+          agent { docker { image 'python:3.7.2' } }
             steps {
               sh ''
               sh 'python --version'
