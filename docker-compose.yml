@@ -1,7 +1,7 @@
 version: '3'
 services:
   database:
-    container_name: postgres_prod
+    container_name: postgres_dev
     restart: always
     image: postgres:10
     env_file:
