@@ -19,6 +19,7 @@ pipeline {
                     sh 'pip3 install boto3==1.9.209'
                     sh 'pip3 install Flask==1.1.1'
                     sh 'pip3 install Flask-RESTful==0.3.7'
+                    sh 'pip3 install arrow==0.14.5'
                     sh 'python3 gen_creds_for_db.py'
     // Uses the default system installation of Python
     // Equivalent to withPythonEnv('/usr/bin/python')
