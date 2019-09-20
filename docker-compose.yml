@@ -19,7 +19,7 @@ services:
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      FLASK_ENV: ${FLASK_ENV}
+      FLASK_ENV: docker
       FLASK_APP: app.py
     depends_on:
       - database

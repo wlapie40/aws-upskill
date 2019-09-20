@@ -13,7 +13,7 @@ from sqlalchemy_utils import (database_exists,
 from Project.aws.cloud_watch.logs.log_events import CloudWatchLogger
 from Project.aws.entities.filters import (datetimeformat,
                                           file_type,)
-from Project.aws.gateways.resources import _read_parameters_store
+from Project.aws.gateways.parameter_store import _read_parameters_store
 from Project.config import DevelopmentConfig
 from Project.user.models import db
 
@@ -95,6 +95,4 @@ def create_app():
         flask_app.jinja_env.filters['datetimeformat'] = datetimeformat
         flask_app.jinja_env.filters['file_type'] = file_type
 
-    if os.path.exists("database.conf"):
-        os.remove("database.conf")
     return flask_app, api, login_manager, cur_env, cw_log
