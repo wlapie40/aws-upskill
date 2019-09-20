@@ -1,3 +1,5 @@
+import os
+
 from flask import (
     render_template,
     request,
@@ -13,27 +15,24 @@ from flask_login import (login_user,
                          current_user, )
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from project.api.api import (ListS3Buckets,
+from Project.api.api import (ListS3Buckets,
                              ListS3BucketFiles,
                              DeleteS3BucketFile,
                              UploadS3BucketFile,
-                             DownloadS3BucketFile,
-                             )
-from project.aws.gateways.resources import (get_bucket,
-                                            get_buckets_list,
-                                            get_region_name,
-                                            _get_s3_resource,
-                                            _get_cloud_watch_logs,
-                                            _client
-                                            )
-from project.run import create_app
-from project.user.forms import (LoginForm,
+                             DownloadS3BucketFile, )
+from Project.aws.gateways.boto import _client, _get_cloud_watch_logs
+from Project.aws.gateways.s3 import get_buckets_list, _get_s3_resource
+from Project.aws.gateways.session import get_bucket, get_region_name
+from Project.run import create_app
+from Project.user.forms import (LoginForm,
                                 RegisterForm,
-                                NewBucketForm,
-                                )
-from project.user.models import db, User
+                                NewBucketForm,)
+from Project.user.models import db, User
 
 app, api, login_manager, cur_env, cw_log = create_app()
+
+if os.path.exists("database.conf"):
+    os.remove("database.conf")
 
 #  todo create a separate class to keep details about logged user
 

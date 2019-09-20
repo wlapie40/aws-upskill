@@ -2,6 +2,7 @@ import os
 import subprocess
 import time
 
+#  todo in progress ^^
 flask_env = os.environ.get('FLASK_ENV', False)
 subprocess.run('pip --version')
 try:

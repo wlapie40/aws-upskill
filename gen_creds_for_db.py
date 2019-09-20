@@ -1,6 +1,6 @@
 import os
 
-from project.aws.gateways.resources import _read_parameters_store
+from Project.aws.gateways.parameter_store import _read_parameters_store
 
 param_names = ['POSTGRES_USER', 'POSTGRES_PASSWORD', 'POSTGRES_HOST', 'POSTGRES_PORT', 'POSTGRES_DB']
 param_store_names = {
