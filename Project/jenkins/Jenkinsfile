@@ -14,7 +14,7 @@ pipeline {
         stage('Building') {
             agent any
             steps {
-                withPythonEnv('python') {
+                withPythonEnv('/usr/bin/python3') {
                     sh 'python --version'
     // Uses the default system installation of Python
     // Equivalent to withPythonEnv('/usr/bin/python')
