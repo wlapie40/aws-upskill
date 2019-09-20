@@ -8,8 +8,7 @@ pipeline {
             agent any
             steps {
                 withPythonEnv('/usr/bin/python3') {
-                    sh 'pip3 install boto3==1.9.209'
-                    sh 'pip3 install arrow==0.14.5'
+                    sh 'pip3 install -r Project/jenkins/requirements.txt'
                     sh 'python3 gen_creds_for_db.py'
 }
              dir ('Project/jenkins/') {
