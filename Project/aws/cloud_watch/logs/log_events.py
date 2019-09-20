@@ -1,10 +1,10 @@
 import os
 import time
 
-from project.aws.gateways.resources import (_client,
-                                           _read_parameters_store,
-                                           _put_parameter_to_store, )
-from project.run import logger
+from Project.aws.gateways.parameter_store import (_read_parameters_store,
+                                                  _put_parameter_to_store, )
+from Project.aws.gateways.boto import _client
+from Project.run import logger
 
 
 #  todo logger decorator
