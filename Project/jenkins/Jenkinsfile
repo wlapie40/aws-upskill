@@ -4,13 +4,18 @@ pipeline {
         FLASK_ENV = 'prod'
     }
     stages {
-        stage('Building') {
-            agent any
+        stage('Checking Param. Store for creds') {
+        agen any
             steps {
                 withPythonEnv('/usr/bin/python3') {
                     sh 'pip3 install -r Project/jenkins/requirements.txt'
                     sh 'python3 gen_creds_for_db.py'
-}
+                   }
+            }
+        }
+        stage('Building') {
+            agent any
+            steps {
              dir ('Project/jenkins/') {
                   sh 'make build'
                 }
